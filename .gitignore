@@ -1,0 +1,12 @@
+.vscode/
+
+.venv/
+**/__pycache__
+**/.pytest_cache
+test-output.xml
+
+*.db
+*.json
+config.toml
+
+denali

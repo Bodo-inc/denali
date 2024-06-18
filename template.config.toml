@@ -1,0 +1,9 @@
+[api]
+port = ""  # Fixed port to run server on
+
+[warehouse]
+path = ""  # Path to warehouse directory
+
+[database]
+url = ""        # URL to connect to database
+dialect = ""    # Database dialect used to determine how to connect to database. Allowed: postgres (or pgx), sqlite (or sqlite3)

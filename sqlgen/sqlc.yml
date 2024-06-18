@@ -1,0 +1,23 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "queries"
+    schema: "migrations/postgres/"
+    gen:
+      go:
+        package: "pg"
+        out: "../models/pg"
+        query_parameter_limit: 4
+        emit_prepared_queries: true
+        emit_interface: true
+
+  - engine: "sqlite"
+    queries: "queries"
+    schema: "migrations/sqlite/"
+    gen:
+      go:
+        package: "sqlite"
+        out: "../models/sqlite"
+        query_parameter_limit: 4
+        emit_prepared_queries: true
+        emit_interface: true
