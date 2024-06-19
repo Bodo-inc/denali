@@ -1,12 +1,14 @@
 # Denali Catalog
 
 An open-source Iceberg Catalog that implements the REST API spec designed to be:
-- Customizable: Supports multiple database backends and warehouse storage locations.
+
 - Simple & Extensible: Written in Go to be easily extended, with minimal dependencies and <5000 lines of hand-written code.
-- Embeddable: A ~20MB binary that can be easily deployed to most environments. Furthermore, supports a SQLite backend and local filesystem storage for entirely local use.
+- Customizable: Supports multiple database backends and warehouse storage locations. A ~20MB binary that can be easily deployed to most environments.
+  - If you want a local ephemeral catalog, use SQLite and local filesystem storage.
+  - If you want a scalable catalog, use PostgreSQL and any object store for storage.
 - Performant & Scalable: Can be easily scaled horizontally (across multiple instances) and vertically (by increasing resources).
 
-Written with ❤️ for Iceberg + Go, we want a REST catalog for the community, by the community. Open to contributions, feedback, and feature requests!
+Written with ❤️ for Iceberg + Go, we want to build a REST catalog for the community with the community. Let's explore the full potential of Iceberg catalogs together. Open to contributions, feedback, and feature requests!
 
 # Install
 ### Recommended:
@@ -96,7 +98,7 @@ path = "..."  # Absolute path to warehouse. Env: $DENALI_WAREHOUSE_PATH
 | Storage | Supported | 
 | --- | --- |
 | Local Filesystem | ![done] |
-| S3 | ![done] | 
+| S3 | 🟡 Untested | 
 | Azure | 🟡 Untested |
 | GCS | 🟡 Untested |
 
