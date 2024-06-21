@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Bodo-inc/denali/common"
 )
@@ -126,6 +128,10 @@ func (qtx *Tx) CreateNamespace(ctx context.Context, ns NamespaceContent) error {
 			return &NamespaceAlreadyExistsError{Path: ns.ID}
 		}
 		return err
+	}
+
+	if _, exists := ns.Properties["created_at"]; !exists {
+		ns.Properties["created_at"] = strconv.FormatInt(time.Now().UnixMilli(), 10)
 	}
 
 	for key, value := range ns.Properties {
