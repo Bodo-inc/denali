@@ -1,0 +1,32 @@
+name: Test CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  python-tests:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+    steps:
+      # Setup & Install Dependencies
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: denali/go.mod
+          cache-dependency-path: denali/go.sum
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+          cache: 'pip'
+      - run: pip install -r denali/tests/requirements.txt
+        name: Install Python Deps
+
+      # Run Python Tests
+      - run: pytest denali/tests
+        name: Run Python Tests
