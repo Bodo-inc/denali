@@ -1,3 +1,4 @@
 pyiceberg==0.6.1
+pyarrow==16.1.0
 
 pytest
