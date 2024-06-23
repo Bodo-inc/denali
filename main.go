@@ -111,10 +111,11 @@ Global Flags:
 						EnvVars:     []string{"DENALI_API_PORT"},
 					},
 					&cli.BoolFlag{
-						Name:    "temp",
-						Aliases: []string{"t"},
-						Usage:   "Run in temporary mode (in-memory database, temporary storage)",
-						Value:   false,
+						Name:               "temp",
+						Aliases:            []string{"t"},
+						DisableDefaultText: true,
+						Usage:              "If set, run in temporary mode (in-memory database, temp local storage)",
+						Value:              false,
 					},
 				},
 				Action: func(ctx *cli.Context) error {
