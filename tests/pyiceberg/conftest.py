@@ -38,14 +38,14 @@ def catalog(tmp_path, build_binary):
         },
     )
 
-    last_line = []
+    last_line: list[str] = []
     while len(last_line) == 0 or "Started the Denali Catalog Server at" not in last_line[-1]:
         if process.stdout is None:
             continue
         process.stdout.readlines
         last_line.append(process.stdout.readline().decode("utf-8"))
         if len(last_line) > 15:
-            raise EnvironmentError("Failed to start Denali Catalog Server")
+            raise EnvironmentError("Failed to start Denali Catalog Server:\n\t" + "\n\t".join("`" + l + "`" for l in last_line))
 
     url = re.search(r"Started the Denali Catalog Server at `(?P<url>[\[\]\:\.\d]+)`", last_line[-1]).group("url")
     yield RestCatalog("rest_catalog", uri=f"http://{url}")
