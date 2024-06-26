@@ -16,6 +16,7 @@ jobs:
     steps:
       # Setup & Install Dependencies
       - uses: actions/checkout@v4
+      - run: pwd
       - uses: actions/setup-go@v4
         with:
           go-version-file: denali/go.mod
