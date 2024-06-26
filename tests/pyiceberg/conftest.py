@@ -44,7 +44,6 @@ def catalog(tmp_path, build_binary):
             continue
         process.stdout.readlines
         last_line.append(process.stdout.readline().decode("utf-8"))
-        print(last_line[-1])
         if len(last_line) > 15:
             raise EnvironmentError("Failed to start Denali Catalog Server")
 
