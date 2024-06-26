@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"runtime/debug"
@@ -30,9 +31,9 @@ var Version = func() string {
 	return strings.TrimSpace(uuid.New().String())
 }()
 
-func runServer(config *logic.Config) error {
+func RunServer(config *logic.Config) error {
 	// Setup by loading config and connect to database
-	s := logic.NewState()
+	s := logic.NewStateFromConfig(config)
 
 	// Create Router and API routes
 	mux := http.NewServeMux()
@@ -44,8 +45,16 @@ func runServer(config *logic.Config) error {
 
 	var handler http.Handler = mux
 	handler = handlers.LoggingHandler(os.Stdout, handler)
-	log.Printf("Starting server on port `%v`", config.Api.Port)
-	return http.ListenAndServe(fmt.Sprintf(":%v", s.Config.Api.Port), handler)
+
+	// Net Listener for Extracting Final Address
+	// If port == 0, a random available port is assigned
+	l, err := net.Listen("tcp", fmt.Sprintf(":%v", config.Api.Port))
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Started the Denali Catalog Server at `%v`", l.Addr().String())
+	return http.Serve(l, handler)
 }
 
 func main() {
@@ -91,21 +100,50 @@ Global Flags:
 				Usage: "Start the REST API server",
 				Flags: []cli.Flag{
 					&cli.Uint64Flag{
-						Name: "port", Aliases: []string{"p"},
+						Name:        "port",
+						Aliases:     []string{"p"},
 						Usage:       "Port to run the REST server on",
-						Value:       0,
-						DefaultText: "config file, or 8080",
+						Value:       0, // 0 means random port
+						DefaultText: "From config file, or randomly chosen/generated if unset",
 						EnvVars:     []string{"DENALI_API_PORT"},
+					},
+					&cli.BoolFlag{
+						Name:               "temp",
+						Aliases:            []string{"t"},
+						DisableDefaultText: true,
+						Usage:              "If set, run in temporary mode (in-memory database, temp local storage)",
+						Value:              false,
 					},
 				},
 				Action: func(ctx *cli.Context) error {
-					path := ctx.Path("config")
-					config := logic.LoadConfig(&path)
+					var config *logic.Config
+					if ctx.Bool("temp") {
+						config = new(logic.Config)
+						config.Database.Url = ":memory:"
+						config.Database.Dialect = "sqlite3"
+
+						// Create temporary directory
+						path, err := os.MkdirTemp("", "denali-wh-")
+						if err != nil {
+							return fmt.Errorf("failed to create temporary directory: %v", err)
+						}
+						config.Warehouse.Path = path
+
+					} else {
+						path := ctx.Path("config")
+						config = logic.LoadConfig(&path)
+					}
+
 					if port := ctx.Uint64("port"); port != 0 {
 						config.Api.Port = port
 					}
 
-					return runServer(config)
+					err := RunServer(config)
+					if err != nil {
+						return fmt.Errorf("failed when running server: %v", err)
+					}
+
+					return nil
 				},
 			},
 		},

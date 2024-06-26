@@ -175,8 +175,8 @@ func FindConfigPath(initPath *string) (*os.File, string) {
 
 func LoadConfig(optConfigPath *string) *Config {
 	// New config in struct
+	// Default Port: 0 = Randomly assigned available port
 	config := new(Config)
-	config.Api.Port = 8080
 
 	// Determine config path
 	configFile, configPath := FindConfigPath(optConfigPath)
@@ -280,6 +280,7 @@ func NewStateFromConfig(config *Config) *State {
 	}
 
 	// Construct an Iceberg IO
+	log.Printf("Using Path `%v` for Iceberg Warehouse", config.Warehouse.Path)
 	io, err := ourIo.LoadFS(config.Warehouse.Path)
 	if err != nil {
 		log.Fatalf("failure when connecting to Iceberg warehouse: %v", err)
