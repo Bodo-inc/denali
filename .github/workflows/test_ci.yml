@@ -16,18 +16,17 @@ jobs:
     steps:
       # Setup & Install Dependencies
       - uses: actions/checkout@v4
-      - run: pwd
       - uses: actions/setup-go@v4
         with:
-          go-version-file: denali/go.mod
-          cache-dependency-path: denali/go.sum
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
       - uses: actions/setup-python@v5
         with:
           python-version: 3.11
           cache: 'pip'
-      - run: pip install -r denali/tests/requirements.txt
+      - run: pip install -r tests/requirements.txt
         name: Install Python Deps
 
       # Run Python Tests
-      - run: pytest denali/tests
-        name: Run Python Tests
+      - run: pytest tests
+        name: Run Tests
