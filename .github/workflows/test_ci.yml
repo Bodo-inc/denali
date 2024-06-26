@@ -28,5 +28,5 @@ jobs:
         name: Install Python Deps
 
       # Run Python Tests
-      - run: pytest tests
+      - run: pytest -v tests
         name: Run Tests
