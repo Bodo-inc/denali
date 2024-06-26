@@ -36,7 +36,6 @@ func RunServer(config *logic.Config) error {
 	s := logic.NewStateFromConfig(config)
 
 	// Create Router and API routes
-	log.Println("Creating Router and API routes")
 	mux := http.NewServeMux()
 	r := routes.Router{Mux: mux, State: s}
 	r.ConfigRoutes()
@@ -44,13 +43,11 @@ func RunServer(config *logic.Config) error {
 	r.ViewRoutes()
 	r.TableRoutes()
 
-	log.Println("Middleware")
 	var handler http.Handler = mux
 	handler = handlers.LoggingHandler(os.Stdout, handler)
 
 	// Net Listener for Extracting Final Address
 	// If port == 0, a random available port is assigned
-	log.Println("Finding Port", config.Api.Port)
 	l, err := net.Listen("tcp", fmt.Sprintf(":%v", config.Api.Port))
 	if err != nil {
 		return err
@@ -107,7 +104,7 @@ Global Flags:
 						Aliases:     []string{"p"},
 						Usage:       "Port to run the REST server on",
 						Value:       0, // 0 means random port
-						DefaultText: "From config file, or randomly chosen if unset",
+						DefaultText: "From config file, or randomly chosen/generated if unset",
 						EnvVars:     []string{"DENALI_API_PORT"},
 					},
 					&cli.BoolFlag{
@@ -120,7 +117,6 @@ Global Flags:
 				},
 				Action: func(ctx *cli.Context) error {
 					var config *logic.Config
-					log.Println("Right Path", ctx.Bool("temp"))
 					if ctx.Bool("temp") {
 						config = new(logic.Config)
 						config.Database.Url = ":memory:"
